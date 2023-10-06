@@ -12,7 +12,7 @@ const taskReducer = (state = initialState, action) => {
       };
     case ACTIONS.DELETE_TASK:
       return {
-        tasks: [],
+        tasks: state.tasks.filter((item) => item.id !== action.payload),
       };
 
     default: {

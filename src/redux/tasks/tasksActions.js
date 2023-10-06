@@ -7,8 +7,9 @@ export const addTask = (newTask) => {
   };
 };
 
-export const deleteTask = () => {
+export const deleteTask = (id) => {
   return {
     type: ACTIONS.DELETE_TASK,
+    payload: id,
   };
 };
