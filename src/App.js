@@ -1,23 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Container from "./components/Container";
+import Header from "./components/Header";
+import NewEvent from "./components/NewEvent";
+import { useSelector } from "react-redux";
 
 function App() {
+  const isNewOpen = useSelector((state) => state.isNewOpen.isNewOpen);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App h-screen relative">
+      <div>
+        <Header />
+        <Container />
+      </div>
+      {isNewOpen && <NewEvent />}
     </div>
   );
 }
