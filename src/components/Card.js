@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTask, updateTasks } from "../redux/tasks/tasksActions";
+import { deleteTask } from "../redux/tasks/tasksActions";
 import {
   startTimer,
   stopTimer,
@@ -21,7 +21,7 @@ const Card = ({ id, name, history }) => {
     if (timer.running) {
       timerID = setInterval(() => {
         dispatch(updateTimer(id));
-      }, 100);
+      }, 10);
     }
     return () => {
       clearInterval(timerID);
@@ -112,7 +112,7 @@ const Card = ({ id, name, history }) => {
           .reverse()
           .map((item, index) => {
             return (
-              <p key={index}>
+              <p key={index} className="text-black/80 mb-3">
                 Started the timer at {item.start}
                 {item.stop ? ` & stopped at ${item.stop}` : " (Active)"}
               </p>

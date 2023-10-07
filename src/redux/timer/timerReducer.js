@@ -66,7 +66,7 @@ const timerReducer = (state = initialState, action) => {
                   minutes: item.minutes + 1,
                   seconds: 0,
                 }
-              : item.minutes === 2
+              : item.minutes === 59
               ? {
                   ...item,
                   hours: item.hours + 1,
