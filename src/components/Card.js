@@ -21,7 +21,7 @@ const Card = ({ id, name, history }) => {
     if (timer.running) {
       timerID = setInterval(() => {
         dispatch(updateTimer(id));
-      }, 1000);
+      }, 100);
     }
     return () => {
       clearInterval(timerID);

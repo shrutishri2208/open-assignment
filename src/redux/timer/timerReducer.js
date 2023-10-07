@@ -60,10 +60,22 @@ const timerReducer = (state = initialState, action) => {
         ...state,
         timers: state.timers.map((item) =>
           item.id === action.payload
-            ? {
-                ...item,
-                seconds: item.seconds + 1,
-              }
+            ? item.seconds === 59
+              ? {
+                  ...item,
+                  minutes: item.minutes + 1,
+                  seconds: 0,
+                }
+              : item.minutes === 2
+              ? {
+                  ...item,
+                  hours: item.hours + 1,
+                  minutes: 0,
+                }
+              : {
+                  ...item,
+                  seconds: item.seconds + 1,
+                }
             : item
         ),
       };
