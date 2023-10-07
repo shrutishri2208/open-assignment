@@ -18,6 +18,7 @@ const NewEvent = () => {
     };
     dispatch(addTask(newTask));
     dispatch(newTimer(newTask.id));
+    document.body.style.overflowY = "scroll";
   };
 
   return (
@@ -37,7 +38,13 @@ const NewEvent = () => {
           <button className="start-btn" onClick={handleOnSave} type="submit">
             Save
           </button>
-          <button className="start-btn" onClick={() => dispatch(closeNew())}>
+          <button
+            className="start-btn"
+            onClick={() => {
+              dispatch(closeNew());
+              document.body.style.overflowY = "scroll";
+            }}
+          >
             Close
           </button>
         </div>

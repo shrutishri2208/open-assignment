@@ -34,7 +34,7 @@ header {
   width: 1000px;
   margin: auto;
   font-family: "Inter", sans-serif;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 /* CARD */

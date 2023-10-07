@@ -8,7 +8,11 @@ const AddButton = () => {
   return (
     <button
       className="add-btn flex justify-center items-center"
-      onClick={() => dispatch(openNew())}
+      onClick={() => {
+        dispatch(openNew());
+        document.body.style.overflowY = "hidden";
+        window.scrollTo({ top: 0 });
+      }}
     >
       <AddIcon className="scale-125" />
     </button>

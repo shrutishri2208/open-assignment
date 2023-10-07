@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTask } from "../redux/tasks/tasksActions";
+import {
+  deleteTask,
+  updateStartTime,
+  updateStopTime,
+} from "../redux/tasks/tasksActions";
 import {
   startTimer,
   stopTimer,
@@ -21,7 +25,7 @@ const Card = ({ id, name, history }) => {
     if (timer.running) {
       timerID = setInterval(() => {
         dispatch(updateTimer(id));
-      }, 10);
+      }, 1000);
     }
     return () => {
       clearInterval(timerID);
@@ -42,11 +46,11 @@ const Card = ({ id, name, history }) => {
     let str = Intl.DateTimeFormat("en-GB", options).format(today);
     let startTime = str.split(",").join("");
 
-    history.push({
-      start: startTime,
-      stop: null,
-    });
-
+    // history.push({
+    //   start: startTime,
+    //   stop: null,
+    // });
+    dispatch(updateStartTime(id, startTime));
     dispatch(startTimer(id));
   };
 
@@ -64,9 +68,10 @@ const Card = ({ id, name, history }) => {
     let str = Intl.DateTimeFormat("en-GB", options).format(today);
     let stopTime = str.split(",").join("");
 
-    const taskToModify = tasks.find((item) => item.id === id);
-    taskToModify.history[history.length - 1].stop = stopTime;
+    // const taskToModify = tasks.find((item) => item.id === id);
+    // taskToModify.history[history.length - 1].stop = stopTime;
 
+    dispatch(updateStopTime(id, stopTime));
     dispatch(stopTimer(id));
   };
 

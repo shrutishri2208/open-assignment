@@ -8,7 +8,7 @@ const Container = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
 
   return (
-    <div className="container ">
+    <div className="container">
       {tasks
         .slice()
         .reverse()
