@@ -8,8 +8,8 @@ const Container = () => {
 
   return (
     <div className="container">
-      {tasks.map((item) => {
-        return <Card {...item} />;
+      {tasks.map((item, index) => {
+        return <Card {...item} key={index} />;
       })}
       <AddButton />
     </div>

@@ -13,6 +13,7 @@ const NewEvent = () => {
     const newTask = {
       id: new Date().getTime(),
       name: taskName,
+      history: [],
     };
     dispatch(addTask(newTask));
   };
