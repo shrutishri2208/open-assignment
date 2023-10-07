@@ -1,11 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTask } from "../redux/tasks/tasksActions";
+import { deleteTask, updateTasks } from "../redux/tasks/tasksActions";
+import {
+  startTimer,
+  stopTimer,
+  updateTimer,
+  deleteTimer,
+} from "../redux/timer/timerActions";
 
 const Card = ({ id, name, history }) => {
-  const [start, setStart] = useState(false);
   const dispatch = useDispatch();
+
   const tasks = useSelector((state) => state.tasks.tasks);
+  const timers = useSelector((state) => state.timers.timers);
+
+  const timer = timers.find((item) => item.id === id);
+
+  useEffect(() => {
+    let timerID;
+    if (timer.running) {
+      timerID = setInterval(() => {
+        dispatch(updateTimer(id));
+      }, 1000);
+    }
+    return () => {
+      clearInterval(timerID);
+    };
+  }, [timer.running, id]);
 
   const handleStart = () => {
     const today = new Date();
@@ -25,7 +46,8 @@ const Card = ({ id, name, history }) => {
       start: startTime,
       stop: null,
     });
-    setStart(true);
+
+    dispatch(startTimer(id));
   };
 
   const handleStop = () => {
@@ -42,28 +64,37 @@ const Card = ({ id, name, history }) => {
     let str = Intl.DateTimeFormat("en-GB", options).format(today);
     let stopTime = str.split(",").join("");
 
-    setStart(false);
-    console.log("STOP: ", stopTime);
+    const taskToModify = tasks.find((item) => item.id === id);
+    taskToModify.history[history.length - 1].stop = stopTime;
 
-    history[history.length - 1].stop = stopTime;
+    dispatch(stopTimer(id));
   };
 
   return (
     <div className="card">
       <header className="flex items-center justify-between ">
-        <p className="card-heading capitalize">{name}</p>
+        <p className="card-heading">
+          {name.slice(0, 1).toUpperCase() + name.slice(1)}
+        </p>
         <div className="flex items-center">
           <div className="divider"></div>
-          <p className="timer">00 : 00 : 00 </p>
+          <p className="timer">
+            {timer.hours < 10 ? `0${timer.hours}` : timer.hours} :{" "}
+            {timer.minutes < 10 ? `0${timer.minutes}` : timer.minutes} :{" "}
+            {timer.seconds < 10 ? `0${timer.seconds}` : timer.seconds}
+          </p>
           <button
-            className={`${start ? "stop-btn" : "start-btn"} ml-16`}
-            onClick={start ? handleStop : handleStart}
+            className={`${timer.running ? "stop-btn" : "start-btn"} ml-16`}
+            onClick={timer.running ? handleStop : handleStart}
           >
-            {start ? "Stop" : "Start"}
+            {timer.running ? "Stop" : "Start"}
           </button>
           <button
             className="delete-btn"
-            onClick={() => dispatch(deleteTask(id))}
+            onClick={() => {
+              dispatch(deleteTask(id));
+              dispatch(deleteTimer(id));
+            }}
           >
             X
           </button>
@@ -81,9 +112,9 @@ const Card = ({ id, name, history }) => {
           .reverse()
           .map((item, index) => {
             return (
-              <p key={index} style={{ order: -index }}>
+              <p key={index}>
                 Started the timer at {item.start}
-                {item.stop ? ` & stopped at ${item.stop}` : "(Active)"}
+                {item.stop ? ` & stopped at ${item.stop}` : " (Active)"}
               </p>
             );
           })}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeNew } from "../redux/new/newActions";
 import { addTask } from "../redux/tasks/tasksActions";
+import { newTimer } from "../redux/timer/timerActions";
 
 const NewEvent = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const NewEvent = () => {
       history: [],
     };
     dispatch(addTask(newTask));
+    dispatch(newTimer(newTask.id));
   };
 
   return (

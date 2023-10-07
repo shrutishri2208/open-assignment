@@ -14,6 +14,10 @@ const taskReducer = (state = initialState, action) => {
       return {
         tasks: state.tasks.filter((item) => item.id !== action.payload),
       };
+    case ACTIONS.UPDATE_TASKS:
+      return {
+        tasks: action.payload,
+      };
 
     default: {
       return state;
