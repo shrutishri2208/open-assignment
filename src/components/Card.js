@@ -23,6 +23,7 @@ const Card = ({ id, name, history }) => {
   useEffect(() => {
     let timerID;
     if (timer.running) {
+      dispatch(updateTimer(id));
       timerID = setInterval(() => {
         dispatch(updateTimer(id));
       }, 1000);
