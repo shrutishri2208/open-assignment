@@ -33,3 +33,10 @@ export const updateTimer = (id, timer) => {
     payload: { id, timer },
   };
 };
+
+export const incrementTimer = (id) => {
+  return {
+    type: ACTIONS.INCREMENT_TIMER,
+    payload: id,
+  };
+};

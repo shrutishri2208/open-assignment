@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteTask,
+  incrementTimer,
   startTime,
   stopTime,
   updateTimer,
@@ -14,6 +15,8 @@ const Card = ({ id, name, history, running }) => {
   const tasks = useSelector((state) => state.tasks.tasks);
   const totalTime = tasks.find((item) => item.id === id).totalTime;
 
+  const [timer, setTimer] = useState(0);
+
   const handleStart = () => {
     const start = new Date();
     dispatch(startTime(id, start));
@@ -24,19 +27,43 @@ const Card = ({ id, name, history, running }) => {
     dispatch(stopTime(id, stop));
   };
 
+  // useEffect(() => {
+  //   if (initialRender) {
+  //     console.log("INITIAL RENDER");
+  //     setInitialRender(false);
+  //     setTimer(totalTime);
+  //   } else {
+  //     if (history.length !== 0) {
+  //       if (!running) {
+  //         let start = new Date(history[history.length - 1].start);
+  //         let stop = new Date(history[history.length - 1].stop);
+  //         let timer = Math.round((stop - start) / 1000);
+  //         dispatch(updateTimer(id, timer));
+  //         console.log("ON STOP");
+  //       } else {
+  //       }
+  //     }
+  //   }
+  // }, [running]);
+
   useEffect(() => {
-    if (initialRender) {
-      setInitialRender(false);
+    console.log("Total Time: ", name, totalTime);
+
+    let timerID;
+    if (running) {
+      console.log("START");
+      timerID = setInterval(() => {
+        dispatch(incrementTimer(id));
+      }, 1000);
     } else {
-      if (history.length !== 0) {
-        if (!running) {
-          let start = new Date(history[history.length - 1].start);
-          let stop = new Date(history[history.length - 1].stop);
-          let timer = Math.round((stop - start) / 1000);
-          dispatch(updateTimer(id, timer));
-        }
-      }
+      console.log("STOP");
+      clearInterval(timerID);
     }
+    return () => {
+      if (timerID) {
+        clearInterval(timerID);
+      }
+    };
   }, [running]);
 
   return (

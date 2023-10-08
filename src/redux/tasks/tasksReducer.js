@@ -61,6 +61,18 @@ const taskReducer = (state = initialState, action) => {
         ),
       };
 
+    case ACTIONS.INCREMENT_TIMER:
+      return {
+        tasks: state.tasks.map((item) =>
+          item.id === action.payload
+            ? {
+                ...item,
+                totalTime: item.totalTime + 1,
+              }
+            : item
+        ),
+      };
+
     default: {
       return state;
     }
