@@ -77,6 +77,11 @@ header {
   font-weight: 600;
   font-size: 16px;
   /* margin-left: 60px; */
+  transition: all 0.3s;
+}
+
+.start-btn:hover {
+  background-color: #2f34c9;
 }
 .stop-btn {
   background-color: #ed5050;
@@ -87,8 +92,12 @@ header {
   font-weight: 600;
   font-size: 16px;
   /* margin-left: 60px; */
+  transition: all 0.3s;
 }
 
+.stop-btn:hover {
+  background-color: #de3a3a;
+}
 .delete-btn {
   background-color: #d9d9d9;
   height: 40px;
@@ -98,6 +107,11 @@ header {
   font-size: 16px;
   font-weight: 600;
   margin-left: 10px;
+  transition: all 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #bebebe;
 }
 
 .timer {
@@ -122,6 +136,11 @@ header {
   font-size: 36px;
   font-weight: 600;
   line-height: 0px;
+  transition: all 0.3s;
+}
+
+.add-btn:hover {
+  background-color: #2f34c9;
 }
 
 /* NEW EVENT */
@@ -141,4 +160,17 @@ header {
   margin-top: 8px;
   margin-bottom: 30px;
   padding: 0px 8px;
+}
+
+@media screen and (max-width: 1024px) and (min-width: 640px) {
+  .header {
+    width: auto;
+  }
+  .card header {
+    width: auto;
+  }
+
+  .add-btn {
+    left: calc(100vw - 100px);
+  }
 }

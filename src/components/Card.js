@@ -9,14 +9,12 @@ import {
 
 const Card = ({ id, name, history }) => {
   const dispatch = useDispatch();
-
   const tasks = useSelector((state) => state.tasks.tasks);
 
   const taskTimer = tasks.find((item) => item.id === id).timer;
   const taskRunning = tasks.find((item) => item.id === id).running;
-  // const timers = useSelector((state) => state.timers.timers);
-  // const timer = timers.find((item) => item.id === id);
 
+  // INCREMENT TIMER EACH SECOND
   useEffect(() => {
     let timerID;
     if (taskRunning) {
@@ -30,6 +28,7 @@ const Card = ({ id, name, history }) => {
     };
   }, [taskRunning, id]);
 
+  // FORMAT START DATE/TIME AND STORE
   const handleStart = () => {
     const today = new Date();
     const options = {
@@ -46,6 +45,7 @@ const Card = ({ id, name, history }) => {
     dispatch(updateStartTime(id, startTime));
   };
 
+  // FORMAT STOP DATE/TIME AND STORE
   const handleStop = () => {
     const today = new Date();
     const options = {
@@ -59,10 +59,10 @@ const Card = ({ id, name, history }) => {
     };
     let str = Intl.DateTimeFormat("en-GB", options).format(today);
     let stopTime = str.split(",").join("");
-
     dispatch(updateStopTime(id, stopTime));
   };
 
+  // STOP ALL TIMERS WHEN USER CLOSES THE WINDOW
   useEffect(() => {
     window.addEventListener("beforeunload", function () {
       console.log("WINDOW IS CLOSING");

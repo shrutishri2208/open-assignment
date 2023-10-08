@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 const Header = () => {
   const tasks = useSelector((state) => state.tasks.tasks);
 
+  // OVERALL TIME TAKEN
   const totalTime = tasks
     .map((item) => item.timer)
     .reduce((acc, cur) => acc + cur, 0);
