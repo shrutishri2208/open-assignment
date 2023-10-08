@@ -15,6 +15,8 @@ const NewEvent = () => {
       id: new Date().getTime(),
       name: taskName,
       history: [],
+      running: false,
+      totalTime: 0,
     };
     dispatch(addTask(newTask));
     dispatch(newTimer(newTask.id));

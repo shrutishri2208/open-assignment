@@ -47,6 +47,54 @@ const taskReducer = (state = initialState, action) => {
             : item
         ),
       };
+
+    case ACTIONS.START_TIME:
+      return {
+        tasks: state.tasks.map((item) =>
+          item.id === action.payload.id
+            ? {
+                ...item,
+                history: [
+                  ...item.history,
+                  {
+                    start: action.payload.start,
+                    stop: null,
+                  },
+                ],
+                running: true,
+              }
+            : item
+        ),
+      };
+    case ACTIONS.STOP_TIME:
+      return {
+        tasks: state.tasks.map((item) =>
+          item.id === action.payload.id
+            ? {
+                ...item,
+                history: item.history.map((historyItem, index) =>
+                  index === item.history.length - 1
+                    ? { ...historyItem, stop: action.payload.stop }
+                    : historyItem
+                ),
+                running: false,
+              }
+            : item
+        ),
+      };
+
+    case ACTIONS.UPDATE_TIMER:
+      return {
+        tasks: state.tasks.map((item) =>
+          item.id === action.payload.id
+            ? {
+                ...item,
+                totalTime: item.totalTime + action.payload.timer,
+              }
+            : item
+        ),
+      };
+
     default: {
       return state;
     }
