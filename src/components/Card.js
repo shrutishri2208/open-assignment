@@ -1,38 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteTask,
-  updateStartTime,
-  updateStopTime,
   startTime,
   stopTime,
   updateTimer,
 } from "../redux/tasks/tasksActions";
-import {
-  startTimer,
-  stopTimer,
-  deleteTimer,
-} from "../redux/timer/timerActions";
 
 const Card = ({ id, name, history, running }) => {
   const dispatch = useDispatch();
+  const [initialRender, setInitialRender] = useState(true);
 
   const tasks = useSelector((state) => state.tasks.tasks);
-  const timers = useSelector((state) => state.timers.timers);
   const totalTime = tasks.find((item) => item.id === id).totalTime;
-  const [timer, setTimer] = useState(totalTime);
-
-  // useEffect(() => {
-  //   let timerID;
-  //   if (timer.running) {
-  //     timerID = setInterval(() => {
-  //       dispatch(updateTimer(id));
-  //     }, 1000);
-  //   }
-  //   return () => {
-  //     clearInterval(timerID);
-  //   };
-  // }, [timer.running, id]);
 
   const handleStart = () => {
     const start = new Date();
@@ -44,40 +24,20 @@ const Card = ({ id, name, history, running }) => {
     dispatch(stopTime(id, stop));
   };
 
-  // useEffect(() => {
-  //   let timerID;
-  //   if (running && history.length !== 0) {
-  //     let now = new Date();
-  //     setTimer(
-  //       totalTime + Math.floor((now - history[history.length - 1].start) / 1000)
-  //     );
-  //     timerID = setInterval(() => {
-  //       setTimer((prev) => prev + 1);
-  //     }, 1000);
-  //   }
-  //   // STOPPED IS CLICKED
-  //   return () => {
-  //     clearInterval(timerID);
-  //     console.log("TOTAL TIME: ", timer);
-  //     dispatch(updateTimer(id, timer));
-  //   };
-  // }, [running]);
-
   useEffect(() => {
-    if (history.length !== 0) {
-      if (!running) {
-        let start = new Date(history[history.length - 1].start);
-        console.log("START: ", start);
-        let stop = new Date(history[history.length - 1].stop);
-        console.log("STOP: ", stop);
-        let timer = Math.round((stop - start) / 1000);
-        console.log("IS IT:", Math.round((stop - start) / 1000));
-        dispatch(updateTimer(id, timer));
+    if (initialRender) {
+      setInitialRender(false);
+    } else {
+      if (history.length !== 0) {
+        if (!running) {
+          let start = new Date(history[history.length - 1].start);
+          let stop = new Date(history[history.length - 1].stop);
+          let timer = Math.round((stop - start) / 1000);
+          dispatch(updateTimer(id, timer));
+        }
       }
     }
   }, [running]);
-
-  console.log(tasks);
 
   return (
     <div className="card">
@@ -88,13 +48,13 @@ const Card = ({ id, name, history, running }) => {
         <div className="flex items-center">
           <div className="divider"></div>
           <p className="timer">
-            {Math.round(totalTime / 3600) < 10
-              ? `0${Math.round(totalTime / 3600)}`
-              : Math.round(totalTime / 3600)}
+            {Math.floor(totalTime / 3600) < 10
+              ? `0${Math.floor(totalTime / 3600)}`
+              : Math.floor(totalTime / 3600)}
             :
-            {Math.round(totalTime / 60) < 10
-              ? `0${Math.round(totalTime / 60)}`
-              : Math.round(totalTime / 60)}
+            {Math.floor(totalTime / 60) < 10
+              ? `0${Math.floor(totalTime / 60)}`
+              : Math.floor(totalTime / 60)}
             :{totalTime % 60 < 10 ? `0${totalTime % 60}` : totalTime % 60}
           </p>
           <button
@@ -107,7 +67,6 @@ const Card = ({ id, name, history, running }) => {
             className="delete-btn"
             onClick={() => {
               dispatch(deleteTask(id));
-              dispatch(deleteTimer(id));
             }}
           >
             X
