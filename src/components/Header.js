@@ -20,8 +20,6 @@ const Header = () => {
 
   let totalTime = totalHours * 3600 + totalMinutes * 60 + totalSeconds;
 
-  console.log(totalTime);
-
   return (
     <header className="bg-white">
       <div className="header flex items-center justify-between">
