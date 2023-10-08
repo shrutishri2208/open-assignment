@@ -56,6 +56,9 @@ header {
 .card-heading {
   font-weight: 500;
   font-size: 20px;
+  max-width: 480px;
+  text-overflow: ellipsis;
+  overflow: hidden;
   /* line-height: 24.2px; */
 }
 
