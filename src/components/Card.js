@@ -2,36 +2,33 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteTask,
+  incrementTimer,
   updateStartTime,
   updateStopTime,
 } from "../redux/tasks/tasksActions";
-import {
-  startTimer,
-  stopTimer,
-  updateTimer,
-  deleteTimer,
-} from "../redux/timer/timerActions";
 
 const Card = ({ id, name, history }) => {
   const dispatch = useDispatch();
 
   const tasks = useSelector((state) => state.tasks.tasks);
-  const timers = useSelector((state) => state.timers.timers);
 
-  const timer = timers.find((item) => item.id === id);
+  const taskTimer = tasks.find((item) => item.id === id).timer;
+  const taskRunning = tasks.find((item) => item.id === id).running;
+  // const timers = useSelector((state) => state.timers.timers);
+  // const timer = timers.find((item) => item.id === id);
 
   useEffect(() => {
     let timerID;
-    if (timer.running) {
-      dispatch(updateTimer(id));
+    if (taskRunning) {
+      dispatch(incrementTimer(id));
       timerID = setInterval(() => {
-        dispatch(updateTimer(id));
+        dispatch(incrementTimer(id));
       }, 1000);
     }
     return () => {
       clearInterval(timerID);
     };
-  }, [timer.running, id]);
+  }, [taskRunning, id]);
 
   const handleStart = () => {
     const today = new Date();
@@ -46,13 +43,7 @@ const Card = ({ id, name, history }) => {
     };
     let str = Intl.DateTimeFormat("en-GB", options).format(today);
     let startTime = str.split(",").join("");
-
-    // history.push({
-    //   start: startTime,
-    //   stop: null,
-    // });
     dispatch(updateStartTime(id, startTime));
-    dispatch(startTimer(id));
   };
 
   const handleStop = () => {
@@ -69,12 +60,15 @@ const Card = ({ id, name, history }) => {
     let str = Intl.DateTimeFormat("en-GB", options).format(today);
     let stopTime = str.split(",").join("");
 
-    // const taskToModify = tasks.find((item) => item.id === id);
-    // taskToModify.history[history.length - 1].stop = stopTime;
-
     dispatch(updateStopTime(id, stopTime));
-    dispatch(stopTimer(id));
   };
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", function () {
+      console.log("WINDOW IS CLOSING");
+      handleStop();
+    });
+  });
 
   return (
     <div className="card">
@@ -85,21 +79,25 @@ const Card = ({ id, name, history }) => {
         <div className="flex items-center">
           <div className="divider"></div>
           <p className="timer">
-            {timer.hours < 10 ? `0${timer.hours}` : timer.hours} :{" "}
-            {timer.minutes < 10 ? `0${timer.minutes}` : timer.minutes} :{" "}
-            {timer.seconds < 10 ? `0${timer.seconds}` : timer.seconds}
+            {Math.floor(taskTimer / 3600) < 10
+              ? `0${Math.floor(taskTimer / 3600)}`
+              : Math.floor(taskTimer / 3600)}
+            :
+            {Math.floor(taskTimer / 60) < 10
+              ? `0${Math.floor(taskTimer / 60)}`
+              : Math.floor(taskTimer / 60)}
+            :{taskTimer % 60 < 10 ? `0${taskTimer % 60}` : taskTimer % 60}
           </p>
           <button
-            className={`${timer.running ? "stop-btn" : "start-btn"} ml-16`}
-            onClick={timer.running ? handleStop : handleStart}
+            className={`${taskRunning ? "stop-btn" : "start-btn"} ml-16`}
+            onClick={taskRunning ? handleStop : handleStart}
           >
-            {timer.running ? "Stop" : "Start"}
+            {taskRunning ? "Stop" : "Start"}
           </button>
           <button
             className="delete-btn"
             onClick={() => {
               dispatch(deleteTask(id));
-              dispatch(deleteTimer(id));
             }}
           >
             X

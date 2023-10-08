@@ -20,6 +20,7 @@ const taskReducer = (state = initialState, action) => {
           item.id === action.payload.id
             ? {
                 ...item,
+                running: true,
                 history: [
                   ...item.history,
                   {
@@ -38,11 +39,23 @@ const taskReducer = (state = initialState, action) => {
           item.id === action.payload.id
             ? {
                 ...item,
+                running: false,
                 history: item.history.map((historyItem, index) =>
                   index === item.history.length - 1
                     ? { ...historyItem, stop: action.payload.stopTime }
                     : historyItem
                 ),
+              }
+            : item
+        ),
+      };
+    case ACTIONS.INCREMENT_TIMER:
+      return {
+        tasks: state.tasks.map((item) =>
+          item.id === action.payload
+            ? {
+                ...item,
+                timer: item.timer + 1,
               }
             : item
         ),

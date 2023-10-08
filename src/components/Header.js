@@ -2,25 +2,25 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const Header = () => {
-  const timers = useSelector((state) => state.timers.timers);
+  // const timers = useSelector((state) => state.timers.timers);
 
-  let hours = [];
-  let minutes = [];
-  let seconds = [];
+  // let hours = [];
+  // let minutes = [];
+  // let seconds = [];
 
-  timers.forEach((item) => {
-    hours.push(item.hours);
-    minutes.push(item.minutes);
-    seconds.push(item.seconds);
-  });
+  // timers.forEach((item) => {
+  //   hours.push(item.hours);
+  //   minutes.push(item.minutes);
+  //   seconds.push(item.seconds);
+  // });
 
-  let totalSeconds = seconds.reduce((acc, cur) => acc + cur, 0) || 0;
-  let totalMinutes = minutes.reduce((acc, cur) => acc + cur, 0) || 0;
-  let totalHours = hours.reduce((acc, cur) => acc + cur, 0) || 0;
+  // let totalSeconds = seconds.reduce((acc, cur) => acc + cur, 0) || 0;
+  // let totalMinutes = minutes.reduce((acc, cur) => acc + cur, 0) || 0;
+  // let totalHours = hours.reduce((acc, cur) => acc + cur, 0) || 0;
 
-  let totalTime = totalHours * 3600 + totalMinutes * 60 + totalSeconds;
+  // let totalTime = totalHours * 3600 + totalMinutes * 60 + totalSeconds;
 
-  console.log(totalTime);
+  // console.log(totalTime);
 
   return (
     <header className="bg-white">
@@ -32,8 +32,8 @@ const Header = () => {
         <p>
           Total Time Spend{" "}
           <span className="font-bolder ml-4">
-            {Math.floor(totalTime / 3600)} hr{" "}
-            {Math.floor((totalTime % 3600) / 60)} min
+            {/* {Math.floor(totalTime / 3600)} hr{" "}
+            {Math.floor((totalTime % 3600) / 60)} min */}
           </span>
         </p>
       </div>

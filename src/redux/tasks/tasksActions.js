@@ -27,3 +27,10 @@ export const updateStopTime = (id, stopTime) => {
     payload: { id, stopTime },
   };
 };
+
+export const incrementTimer = (id) => {
+  return {
+    type: ACTIONS.INCREMENT_TIMER,
+    payload: id,
+  };
+};
