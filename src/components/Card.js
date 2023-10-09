@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   closeTime,
@@ -9,7 +9,7 @@ import {
   updateTimer,
 } from "../redux/tasks/tasksActions";
 
-const Card = ({ id, name, history, running }) => {
+const Card = ({ id, name, history }) => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks.tasks);
 
@@ -98,45 +98,6 @@ const Card = ({ id, name, history, running }) => {
     dispatch(updateStopTime(id, stopTime));
   };
 
-  // useEffect(() => {
-  //   if (initialRender) {
-  //     console.log("INITIAL RENDER");
-  //     setInitialRender(false);
-  //     setTimer(totalTime);
-  //   } else {
-  //     if (history.length !== 0) {
-  //       if (!running) {
-  //         let start = new Date(history[history.length - 1].start);
-  //         let stop = new Date(history[history.length - 1].stop);
-  //         let timer = Math.round((stop - start) / 1000);
-  //         dispatch(updateTimer(id, timer));
-  //         console.log("ON STOP");
-  //       } else {
-  //       }
-  //     }
-  //   }
-  // }, [running]);
-
-  useEffect(() => {
-    console.log("Total Time: ", name, totalTime);
-
-    let timerID;
-    if (running) {
-      console.log("START");
-      timerID = setInterval(() => {
-        dispatch(incrementTimer(id));
-      }, 1000);
-    } else {
-      console.log("STOP");
-      clearInterval(timerID);
-    }
-    return () => {
-      if (timerID) {
-        clearInterval(timerID);
-      }
-    };
-  }, [running]);
-
   return (
     <div className="card">
       <header className="flex items-center justify-between ">
@@ -173,45 +134,10 @@ const Card = ({ id, name, history, running }) => {
       </header>
       <p className="font-bolder my-3 leading-4">History</p>
       <div className="history">
-        {!history.length ? (
+        {!history.length && (
           <p className="text-black/80 mb-3">
             No History Found, Click on the Start button to track the time{" "}
           </p>
-        ) : (
-          history
-            .slice()
-            .reverse()
-            .map((item, index) => {
-              const options = {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: true,
-              };
-              let startTime;
-              if (item.start) {
-                startTime = Intl.DateTimeFormat("en-GB", options)
-                  .format(new Date(item.start))
-                  .split(",")
-                  .join("");
-              }
-              let stopTime;
-              if (item.stop) {
-                stopTime = Intl.DateTimeFormat("en-GB", options)
-                  .format(new Date(item.stop))
-                  .split(",")
-                  .join("");
-              }
-              return (
-                <p key={index} className="text-black/80 mb-3">
-                  Started the timer at {startTime}
-                  {stopTime ? ` & stopped at ${stopTime} ` : " (Active)"}
-                </p>
-              );
-            })
         )}
         {history
           .slice()
