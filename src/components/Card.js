@@ -57,7 +57,7 @@ const Card = ({ id, name, history }) => {
   useEffect(() => {
     let timerID;
     if (taskRunning) {
-      dispatch(incrementTimer(id));
+      // dispatch(incrementTimer(id));
       timerID = setInterval(() => {
         dispatch(incrementTimer(id));
       }, 1000);
