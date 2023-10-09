@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  closeTime,
   deleteTask,
   incrementTimer,
   updateStartTime,
   updateStopTime,
+  updateTimer,
 } from "../redux/tasks/tasksActions";
 
 const Card = ({ id, name, history }) => {
@@ -13,12 +15,46 @@ const Card = ({ id, name, history }) => {
 
   const taskTimer = tasks.find((item) => item.id === id).timer;
   const taskRunning = tasks.find((item) => item.id === id).running;
+  useEffect(() => {
+    window.addEventListener("beforeunload", function () {
+      const close = new Date();
+      dispatch(closeTime(id, close));
+    });
+    return () => {
+      window.removeEventListener("beforeunload", function () {
+        const close = new Date();
+        dispatch(closeTime(id, close));
+      });
+    };
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    const update = () => {
+      if (history.length !== 0) {
+        if (history[history.length - 1].stop === null) {
+          if (history[history.length - 1].close !== null) {
+            let backgroundTime = Math.round(
+              (new Date().getTime() -
+                new Date(history[history.length - 1].close).getTime()) /
+                1000
+            );
+            console.log("BACKGROUND TIME: ", backgroundTime);
+            dispatch(updateTimer(id, backgroundTime));
+          }
+        }
+      }
+    };
+
+    window.addEventListener("load", update);
+    return () => {
+      window.removeEventListener("load", update);
+    };
+  }, []);
 
   // INCREMENT TIMER EACH SECOND
   useEffect(() => {
     let timerID;
     if (taskRunning) {
-      dispatch(incrementTimer(id));
       timerID = setInterval(() => {
         dispatch(incrementTimer(id));
       }, 1000);
@@ -30,45 +66,37 @@ const Card = ({ id, name, history }) => {
 
   // FORMAT START DATE/TIME AND STORE
   const handleStart = () => {
-    const today = new Date();
-    const options = {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    };
-    let str = Intl.DateTimeFormat("en-GB", options).format(today);
-    let startTime = str.split(",").join("");
+    const startTime = new Date();
+    // const options = {
+    //   year: "numeric",
+    //   month: "2-digit",
+    //   day: "2-digit",
+    //   hour: "2-digit",
+    //   minute: "2-digit",
+    //   second: "2-digit",
+    //   hour12: true,
+    // };
+    // let str = Intl.DateTimeFormat("en-GB", options).format(today);
+    // let startTime = str.split(",").join("");
     dispatch(updateStartTime(id, startTime));
   };
 
   // FORMAT STOP DATE/TIME AND STORE
   const handleStop = () => {
-    const today = new Date();
-    const options = {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    };
-    let str = Intl.DateTimeFormat("en-GB", options).format(today);
-    let stopTime = str.split(",").join("");
+    const stopTime = new Date();
+    // const options = {
+    //   year: "numeric",
+    //   month: "2-digit",
+    //   day: "2-digit",
+    //   hour: "2-digit",
+    //   minute: "2-digit",
+    //   second: "2-digit",
+    //   hour12: true,
+    // };
+    // let str = Intl.DateTimeFormat("en-GB", options).format(today);
+    // let stopTime = str.split(",").join("");
     dispatch(updateStopTime(id, stopTime));
   };
-
-  // STOP ALL TIMERS WHEN USER CLOSES THE WINDOW
-  useEffect(() => {
-    window.addEventListener("beforeunload", function () {
-      console.log("WINDOW IS CLOSING");
-      handleStop();
-    });
-  });
 
   return (
     <div className="card">
@@ -115,10 +143,37 @@ const Card = ({ id, name, history }) => {
           .slice()
           .reverse()
           .map((item, index) => {
+            console.log(item);
+            const options = {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true,
+            };
+
+            let start;
+            let stop;
+
+            if (item.start) {
+              start = Intl.DateTimeFormat("en-GB", options)
+                .format(new Date(item.start))
+                .split(",")
+                .join("");
+            }
+            if (item.stop) {
+              stop = Intl.DateTimeFormat("en-GB", options)
+                .format(new Date(item.stop))
+                .split(",")
+                .join("");
+            }
+
             return (
               <p key={index} className="text-black/80 mb-3">
-                Started the timer at {item.start}
-                {item.stop ? ` & stopped at ${item.stop}` : " (Active)"}
+                Started the timer at {start}
+                {stop ? ` & stopped at ${stop}` : " (Active)"}
               </p>
             );
           })}

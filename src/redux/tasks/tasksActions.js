@@ -34,3 +34,17 @@ export const incrementTimer = (id) => {
     payload: id,
   };
 };
+
+export const updateTimer = (id, backgroundTime) => {
+  return {
+    type: ACTIONS.UPDATE_TIMER,
+    payload: { id, backgroundTime },
+  };
+};
+
+export const closeTime = (id, close) => {
+  return {
+    type: ACTIONS.CLOSE_TIME,
+    payload: { id, close },
+  };
+};
