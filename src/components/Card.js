@@ -63,12 +63,12 @@ const Card = ({ id, name, history }) => {
   };
 
   // STOP ALL TIMERS WHEN USER CLOSES THE WINDOW
-  useEffect(() => {
-    window.addEventListener("beforeunload", function () {
-      console.log("WINDOW IS CLOSING");
-      handleStop();
-    });
-  });
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", function () {
+  //     console.log("WINDOW IS CLOSING");
+  //     handleStop();
+  //   });
+  // });
 
   return (
     <div className="card">
