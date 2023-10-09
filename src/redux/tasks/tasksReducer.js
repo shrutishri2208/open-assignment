@@ -14,7 +14,7 @@ const taskReducer = (state = initialState, action) => {
       return {
         tasks: state.tasks.filter((item) => item.id !== action.payload),
       };
-    case ACTIONS.UPDATE_START_TIME:
+    case ACTIONS.START_TIME:
       return {
         tasks: state.tasks.map((item) =>
           item.id === action.payload.id
@@ -24,17 +24,17 @@ const taskReducer = (state = initialState, action) => {
                 history: [
                   ...item.history,
                   {
-                    start: action.payload.startTime,
+                    start: action.payload.start,
                     stop: null,
                     close: null,
                   },
                 ],
+                running: true,
               }
             : item
         ),
       };
-
-    case ACTIONS.UPDATE_STOP_TIME:
+    case ACTIONS.STOP_TIME:
       return {
         tasks: state.tasks.map((item) =>
           item.id === action.payload.id
@@ -43,9 +43,10 @@ const taskReducer = (state = initialState, action) => {
                 running: false,
                 history: item.history.map((historyItem, index) =>
                   index === item.history.length - 1
-                    ? { ...historyItem, stop: action.payload.stopTime }
+                    ? { ...historyItem, stop: action.payload.stop }
                     : historyItem
                 ),
+                running: false,
               }
             : item
         ),

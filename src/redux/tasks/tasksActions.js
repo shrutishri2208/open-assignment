@@ -14,17 +14,16 @@ export const deleteTask = (id) => {
   };
 };
 
-export const updateStartTime = (id, startTime) => {
+export const startTime = (id, start) => {
   return {
-    type: ACTIONS.UPDATE_START_TIME,
-    payload: { id, startTime },
+    type: ACTIONS.START_TIME,
+    payload: { id, start },
   };
 };
-
-export const updateStopTime = (id, stopTime) => {
+export const stopTime = (id, stop) => {
   return {
-    type: ACTIONS.UPDATE_STOP_TIME,
-    payload: { id, stopTime },
+    type: ACTIONS.STOP_TIME,
+    payload: { id, stop },
   };
 };
 
