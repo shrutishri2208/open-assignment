@@ -15,6 +15,8 @@ const Card = ({ id, name, history }) => {
 
   const taskTimer = tasks.find((item) => item.id === id).timer;
   const taskRunning = tasks.find((item) => item.id === id).running;
+
+  // ON WINDOW CLOSE
   useEffect(() => {
     window.addEventListener("beforeunload", function () {
       const close = new Date();
@@ -64,37 +66,15 @@ const Card = ({ id, name, history }) => {
     };
   }, [taskRunning, id]);
 
-  // FORMAT START DATE/TIME AND STORE
+  // STORE START DATE/TIME
   const handleStart = () => {
     const startTime = new Date();
-    // const options = {
-    //   year: "numeric",
-    //   month: "2-digit",
-    //   day: "2-digit",
-    //   hour: "2-digit",
-    //   minute: "2-digit",
-    //   second: "2-digit",
-    //   hour12: true,
-    // };
-    // let str = Intl.DateTimeFormat("en-GB", options).format(today);
-    // let startTime = str.split(",").join("");
     dispatch(updateStartTime(id, startTime));
   };
 
-  // FORMAT STOP DATE/TIME AND STORE
+  // STORE STOP DATE/TIME
   const handleStop = () => {
     const stopTime = new Date();
-    // const options = {
-    //   year: "numeric",
-    //   month: "2-digit",
-    //   day: "2-digit",
-    //   hour: "2-digit",
-    //   minute: "2-digit",
-    //   second: "2-digit",
-    //   hour12: true,
-    // };
-    // let str = Intl.DateTimeFormat("en-GB", options).format(today);
-    // let stopTime = str.split(",").join("");
     dispatch(updateStopTime(id, stopTime));
   };
 

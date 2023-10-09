@@ -25,6 +25,8 @@ const NewEvent = () => {
     dispatch(addTask(newTask));
     document.body.style.overflowY = "scroll";
   };
+
+  // CLOSE NEW EVENT POP UP WHEN CLICKED OUTSIDE
   const handleClickOutside = (e) => {
     if (form.current && !form.current.contains(e.target)) {
       dispatch(closeNew());
