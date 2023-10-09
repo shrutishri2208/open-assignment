@@ -73,7 +73,7 @@ const Card = ({ id, name, history }) => {
   return (
     <div className="card">
       <header className="flex items-center justify-between ">
-        <p className="card-heading">
+        <p className="card-heading text-black/90">
           {name.slice(0, 1).toUpperCase() + name.slice(1)}
         </p>
         <div className="flex items-center">
