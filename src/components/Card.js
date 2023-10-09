@@ -1,79 +1,81 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  closeTime,
   deleteTask,
+  incrementTimer,
   updateStartTime,
   updateStopTime,
-} from "../redux/tasks/tasksActions";
-import {
-  startTimer,
-  stopTimer,
   updateTimer,
-  deleteTimer,
-} from "../redux/timer/timerActions";
+} from "../redux/tasks/tasksActions";
 
 const Card = ({ id, name, history }) => {
   const dispatch = useDispatch();
-
   const tasks = useSelector((state) => state.tasks.tasks);
-  const timers = useSelector((state) => state.timers.timers);
 
-  const timer = timers.find((item) => item.id === id);
+  const taskTimer = tasks.find((item) => item.id === id).timer;
+  const taskRunning = tasks.find((item) => item.id === id).running;
+
+  // ON WINDOW CLOSE
+  useEffect(() => {
+    window.addEventListener("beforeunload", function () {
+      const close = new Date();
+      dispatch(closeTime(id, close));
+    });
+    return () => {
+      window.removeEventListener("beforeunload", function () {
+        const close = new Date();
+        dispatch(closeTime(id, close));
+      });
+    };
+  }, [dispatch, id]);
 
   useEffect(() => {
+    const update = () => {
+      if (history.length !== 0) {
+        if (history[history.length - 1].stop === null) {
+          if (history[history.length - 1].close !== null) {
+            let backgroundTime = Math.round(
+              (new Date().getTime() -
+                new Date(history[history.length - 1].close).getTime()) /
+                1000
+            );
+            console.log("BACKGROUND TIME: ", backgroundTime);
+            dispatch(updateTimer(id, backgroundTime));
+          }
+        }
+      }
+    };
+
+    window.addEventListener("load", update);
+    return () => {
+      window.removeEventListener("load", update);
+    };
+  }, []);
+
+  // INCREMENT TIMER EACH SECOND
+  useEffect(() => {
     let timerID;
-    if (timer.running) {
-      dispatch(updateTimer(id));
+    if (taskRunning) {
       timerID = setInterval(() => {
-        dispatch(updateTimer(id));
+        dispatch(incrementTimer(id));
       }, 1000);
     }
     return () => {
       clearInterval(timerID);
     };
-  }, [timer.running, id]);
+  }, [taskRunning, id]);
 
+  // STORE START DATE/TIME
   const handleStart = () => {
-    const today = new Date();
-    const options = {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    };
-    let str = Intl.DateTimeFormat("en-GB", options).format(today);
-    let startTime = str.split(",").join("");
-
-    // history.push({
-    //   start: startTime,
-    //   stop: null,
-    // });
+    const startTime = new Date();
     dispatch(updateStartTime(id, startTime));
-    dispatch(startTimer(id));
   };
 
+  // STORE STOP DATE/TIME
   const handleStop = () => {
-    const today = new Date();
-    const options = {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    };
-    let str = Intl.DateTimeFormat("en-GB", options).format(today);
-    let stopTime = str.split(",").join("");
-
-    // const taskToModify = tasks.find((item) => item.id === id);
-    // taskToModify.history[history.length - 1].stop = stopTime;
-
+    const stopTime = new Date();
     dispatch(updateStopTime(id, stopTime));
-    dispatch(stopTimer(id));
   };
 
   return (
@@ -85,21 +87,25 @@ const Card = ({ id, name, history }) => {
         <div className="flex items-center">
           <div className="divider"></div>
           <p className="timer">
-            {timer.hours < 10 ? `0${timer.hours}` : timer.hours} :{" "}
-            {timer.minutes < 10 ? `0${timer.minutes}` : timer.minutes} :{" "}
-            {timer.seconds < 10 ? `0${timer.seconds}` : timer.seconds}
+            {Math.floor(taskTimer / 3600) < 10
+              ? `0${Math.floor(taskTimer / 3600)}`
+              : Math.floor(taskTimer / 3600)}
+            :
+            {Math.floor(taskTimer / 60) < 10
+              ? `0${Math.floor(taskTimer / 60)}`
+              : Math.floor(taskTimer / 60)}
+            :{taskTimer % 60 < 10 ? `0${taskTimer % 60}` : taskTimer % 60}
           </p>
           <button
-            className={`${timer.running ? "stop-btn" : "start-btn"} ml-16`}
-            onClick={timer.running ? handleStop : handleStart}
+            className={`${taskRunning ? "stop-btn" : "start-btn"} ml-16`}
+            onClick={taskRunning ? handleStop : handleStart}
           >
-            {timer.running ? "Stop" : "Start"}
+            {taskRunning ? "Stop" : "Start"}
           </button>
           <button
             className="delete-btn"
             onClick={() => {
               dispatch(deleteTask(id));
-              dispatch(deleteTimer(id));
             }}
           >
             X
@@ -117,10 +123,37 @@ const Card = ({ id, name, history }) => {
           .slice()
           .reverse()
           .map((item, index) => {
+            console.log(item);
+            const options = {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true,
+            };
+
+            let start;
+            let stop;
+
+            if (item.start) {
+              start = Intl.DateTimeFormat("en-GB", options)
+                .format(new Date(item.start))
+                .split(",")
+                .join("");
+            }
+            if (item.stop) {
+              stop = Intl.DateTimeFormat("en-GB", options)
+                .format(new Date(item.stop))
+                .split(",")
+                .join("");
+            }
+
             return (
               <p key={index} className="text-black/80 mb-3">
-                Started the timer at {item.start}
-                {item.stop ? ` & stopped at ${item.stop}` : " (Active)"}
+                Started the timer at {start}
+                {stop ? ` & stopped at ${stop}` : " (Active)"}
               </p>
             );
           })}

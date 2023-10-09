@@ -27,3 +27,24 @@ export const updateStopTime = (id, stopTime) => {
     payload: { id, stopTime },
   };
 };
+
+export const incrementTimer = (id) => {
+  return {
+    type: ACTIONS.INCREMENT_TIMER,
+    payload: id,
+  };
+};
+
+export const updateTimer = (id, backgroundTime) => {
+  return {
+    type: ACTIONS.UPDATE_TIMER,
+    payload: { id, backgroundTime },
+  };
+};
+
+export const closeTime = (id, close) => {
+  return {
+    type: ACTIONS.CLOSE_TIME,
+    payload: { id, close },
+  };
+};

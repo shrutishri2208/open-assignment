@@ -1,26 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 const Header = () => {
-  const timers = useSelector((state) => state.timers.timers);
+  const tasks = useSelector((state) => state.tasks.tasks);
 
-  let hours = [];
-  let minutes = [];
-  let seconds = [];
-
-  timers.forEach((item) => {
-    hours.push(item.hours);
-    minutes.push(item.minutes);
-    seconds.push(item.seconds);
-  });
-
-  let totalSeconds = seconds.reduce((acc, cur) => acc + cur, 0) || 0;
-  let totalMinutes = minutes.reduce((acc, cur) => acc + cur, 0) || 0;
-  let totalHours = hours.reduce((acc, cur) => acc + cur, 0) || 0;
-
-  let totalTime = totalHours * 3600 + totalMinutes * 60 + totalSeconds;
-
-  console.log(totalTime);
+  // OVERALL TIME TAKEN
+  const totalTime = tasks
+    .map((item) => item.timer)
+    .reduce((acc, cur) => acc + cur, 0);
 
   return (
     <header className="bg-white">
