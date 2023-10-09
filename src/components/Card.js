@@ -57,6 +57,7 @@ const Card = ({ id, name, history }) => {
   useEffect(() => {
     let timerID;
     if (taskRunning) {
+      dispatch(incrementTimer(id));
       timerID = setInterval(() => {
         dispatch(incrementTimer(id));
       }, 1000);
@@ -114,49 +115,50 @@ const Card = ({ id, name, history }) => {
       </header>
       <p className="font-bolder my-3 leading-4">History</p>
       <div className="history">
-        {!history.length && (
+        {history.length === 0 ? (
           <p className="text-black/80 mb-3">
             No History Found, Click on the Start button to track the time{" "}
           </p>
+        ) : (
+          history
+            .slice()
+            .reverse()
+            .map((item, index) => {
+              console.log(item);
+              const options = {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+              };
+
+              let start;
+              let stop;
+
+              if (item.start) {
+                start = Intl.DateTimeFormat("en-GB", options)
+                  .format(new Date(item.start))
+                  .split(",")
+                  .join("");
+              }
+              if (item.stop) {
+                stop = Intl.DateTimeFormat("en-GB", options)
+                  .format(new Date(item.stop))
+                  .split(",")
+                  .join("");
+              }
+
+              return (
+                <p key={index} className="text-black/80 mb-3">
+                  Started the timer at {start}
+                  {stop ? ` & stopped at ${stop}` : " (Active)"}
+                </p>
+              );
+            })
         )}
-        {history
-          .slice()
-          .reverse()
-          .map((item, index) => {
-            console.log(item);
-            const options = {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: true,
-            };
-
-            let start;
-            let stop;
-
-            if (item.start) {
-              start = Intl.DateTimeFormat("en-GB", options)
-                .format(new Date(item.start))
-                .split(",")
-                .join("");
-            }
-            if (item.stop) {
-              stop = Intl.DateTimeFormat("en-GB", options)
-                .format(new Date(item.stop))
-                .split(",")
-                .join("");
-            }
-
-            return (
-              <p key={index} className="text-black/80 mb-3">
-                Started the timer at {start}
-                {stop ? ` & stopped at ${stop}` : " (Active)"}
-              </p>
-            );
-          })}
       </div>
     </div>
   );
